@@ -21,3 +21,26 @@ a:active {
     text-decoration: underline;
     color: #58a790;
 }
+
+.introduce {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    color: #2c6c8a77;
+}
+
+.Hello {
+    font: 5em sans-serif;
+}
+
+.end {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font: 2em small;
+    color: #01253677;
+}
+
+footer {
+    margin-top: 10%;
+}
