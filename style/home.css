@@ -1,4 +1,4 @@
-.record2023 div {
+#record div {
     border: 2px solid black;
     border-radius: 15%;
     font: 2em medium;
@@ -22,19 +22,29 @@ a:active {
     color: #58a790;
 }
 
-.introduce {
+body {
+    font-family: 'Palatino';
+    text-rendering: optimizeLegibility;
+}
+
+
+#container {
     display: flex;
     flex-direction: column;
     text-align: center;
     color: #2c6c8a77;
 }
 
-.Hello {
+#Hello {
     font: 5em sans-serif;
     
 }
 
-.end {
+#endline {
+    color: rgb(179, 176, 176);
+}
+
+#end {
     display: flex;
     flex-direction: column;
     text-align: center;
