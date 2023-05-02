@@ -13,8 +13,8 @@ function initHead(){
     var head = document.createElement("h1");
     head.appendChild(head_a);
 
-    const header = document.getElementsByTagName("header");
-    header[0].appendChild(head);
+    var header = document.getElementById("header");
+    header.appendChild(head);
 }
 
 function initArticle(){
