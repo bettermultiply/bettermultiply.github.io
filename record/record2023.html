@@ -1,40 +1,38 @@
-<html>
-    <head>
-        <title>BetMul -> 2023</title>
-        <script src="/script/home.js"></script>
-        <link href="style/Palatino Font Free/Palatino.ttf" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" href="style/home.css" />
-    </head>
+<!DOCTYPE html>
+<html lang="en">
 
-    <body style=" display: block; width: 800px;">
-        <header id="container">
-            
-        </header>
-        <div id="content">
-            <h1 style="font-size: 30px;">Welcome to BM's 2023!</h1>
-            <div>
-                <h2>电影</h2>
-                <ul>
-                    <li>犬王</li>
-                    <li>宇宙探索编辑部</li>
-                    <li>流浪地球</li>
-                    <li>深海</li>
-                    <li>西西里的美丽传说</li>
-                </ul>
-                
-            </div>
-            <div>
-                <h2>书</h2>
-                <ul>
-                    <li>铃芽户缔</li>
-                    <li>柏拉图与技术呆子</li>
-                    <li>一个定理的诞生</li>
-                    <li>※被讨厌的勇气</li>
-                    <li>你一生的故事</li>
-                    <li>通往夏天的隧道，再见的出口</li>
-                </ul>
-            </div>
-        </div>
-        
-    </body>
+<head>
+    <link rel="icon" href="../images/aiqfome.svg" />
+    <bm-article-head title="BM2023"></bm-article-head>  
+    <script src="../script/articleHead.js"></script>
+    <script src="../script/nagvigator.js"></script>
+
+</head>
+
+<body>
+    <bm-navigator></bm-navigator>
+    <bm-article title="BM2023">
+        How to Create Custom Elements
+        One thing you might have noticed with HTML templates is that it can be tricky to insert your code in the right
+        place. The earlier welcome message example was just appended to the page.
+
+        If there was content already on the page, say, a banner image, the welcome message would appear below it.
+        <bm-article-image src="../images/hina.jpg"></bm-article-image>
+        As a custom element, your welcome message might look like this:
+
+        And you can put it wherever you want on the page.
+
+        With that in mind, let's take a look at custom elements and create our own React-like header and footer
+        elements.
+
+        Setup
+        For a portfolio site, you might have some boilerplate code that looks like this:
+
+    </bm-article>
+    <script src="../script/controlPixelRatio.js"></script>
+    <script src="../script/articleTemplate.js"></script>
+    <script src="../script/articleImage.js"></script>
+
+</body>
+
 </html>

@@ -4,25 +4,16 @@ class articleTemplate extends HTMLElement {
     }
 
     connectedCallback() {
-        const articleTitle = this.getAttribute('title');
-        const articleHref = this.getAttribute('href');
-        const viewContent = this.innerHTML;
-
-        this.innerHTML = 
-        '\
-            <div class="article"> \
-                <a href="'+articleHref+'"> \
-                    <h1>' 
-                    +articleTitle+
-                    '</h1> \
-                </a> \
-                <br/> \
-                <div class="view">' 
-                    +viewContent+
-                '</div> \
-            </div> \
-            <hr/> \
-        ';
+        const title = this.getAttribute(this.title)
+        this.innerHTML = `
+            <div class="container">
+                <div class="article-container">
+                    <h1 id="article-title">BM2023</h1>
+                    <br></br>
+                    ${this.innerHTML}
+                </div>
+            </div>
+        `;
     }
 }
 
