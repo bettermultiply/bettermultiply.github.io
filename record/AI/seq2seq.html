@@ -41,7 +41,7 @@ RNN: <><><>我还没学，先空着
 
 Encoder: 在此处的作用是通过处理输入，来捕获输入当中重要的信息(特征)，并将其存储在 Network 中作为「隐状态」(hidden state)
 特别的，如果所用的模型带有 attention 机制，Encoder 还会输出一个 context vector，该向量是根据输入生成的隐状态的加权和，
-该<hr> 权值 <hr>由当前 step 的上一个输出隐状态，和所有 Encoder 算出的输入隐状态计算得到(进行点积得到 attention score 再softmax)
+该权值由当前 step 的上一个输出隐状态，和所有 Encoder 算出的输入隐状态计算得到(进行点积得到 attention score 再softmax)
 <br>
 
 Decoder: 此处用于处理输出，借助 隐状态 和 context vector 来生成最终输出(将 固定长的向量 extract 成不定长的序列)
@@ -125,14 +125,20 @@ LSTM 能够成功学习具有长范围时间依赖性的数据，能学会将一
 
 
 
+<br>
 
 
 
 
 
     1. https://s3tlxskbq3.feishu.cn/docx/NyPqdCKraoXz9gxNVCfcIFdnnAc#ZWSwdmWQaoGAQuxkOEHcuD5UnVl
+<br>
+
     2. https://arxiv.org/pdf/1409.3215.pdf
+
+    <br>
     3. https://en.wikipedia.org/wiki/Autoregressive_model
+    <br>
     4. https://en.wikipedia.org/wiki/Seq2seq#:~:text=Seq2seq%20is%20a%20family%20of,one%20sequence%20into%20another%20sequence.
   </bm-article>
   <script src="../../script/controlPixelRatio.js"></script>
