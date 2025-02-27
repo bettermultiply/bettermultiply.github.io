@@ -1,7 +1,7 @@
 ---
 title: chain
 date: 2023-01-01T00:00:00+08:00
-dxescription: 
+dxescription: hello
 ---
 I had been notice the (thread)[https://x.com/eatonphil/status/1756458164868776239?s=20] of Phil Eaton.
 before this, I never know what is CR,
