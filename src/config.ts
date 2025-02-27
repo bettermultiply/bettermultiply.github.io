@@ -20,7 +20,7 @@ export const Socials: Record<string, Record<string, string>> = {
 // doc: https://giscus.app
 // data-theme is auto changed between noborder_light / noborder_gray
 export const GiscusConfig: Record<string, string> = {
-	'data-repo': 'ladit/astro-blog-zozo',
+	'data-repo': 'bettermultiply/bettermultiply.github.io',
 	'data-repo-id': 'R_kgDOLgobXQ',
 	'data-category': 'Announcements',
 	'data-category-id': 'DIC_kwDOLgobXc4Cd_N6',
