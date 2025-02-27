@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <link rel="icon" href="../../images/aiqfome.svg" />
+  <bm-article-head title="seq2seq"></bm-article-head>
+  <script src="../../script/articleHead.js"></script>
+  <script src="../../script/nagvigator.js"></script>
+</head>
+
+<body>
+  <bm-navigator></bm-navigator>
+  <bm-article title="seq2seq">
+    本文只是一篇学习笔记，学习材料链接已在文章最后给出。
+    <br>
+
+按笔者的习惯，首先来进行名词解释，<strong>什么是 seq2seq</strong>，之后所有新名词(于笔者而言)都会先进行一次名词解释。
+<br>
+
+Seq2seq 即为 Sequence to Sequence ，是一种用于自然语言处理的机器学习方法，顾名思义，这种方法能将一个「(词)序列」转化为另一个「(词)序列」。
+可能的应用场景有：翻译、图像描述、对话模型和文本总结。其中最经典的，也是最早的应用场景便是翻译。
+<br>
+
+但笔者认为就像名字上没有提到语言，而只是对输入输出形式化的描述，这种思想其实能对任意「序列」形式的内容进行使用。
+<br>
+<br>
+
+Seq2seq 模型由两部分组成：1. Encoder 2. Decoder 因此 Seq2seq 模型也被称为 Encoder-Decoder 结构
+<br>
+
+这两部分通常是用各式各样的 RNN 来实现的，因为 RNN 具有可以处理不定长输入的能力，
+Encoder 获取不定长的输入文本，将其转化为固定长度的向量，作为 Decoder 的输入，
+Decoder 根据这个固定长度的向量得到输出——不定长的文本序列
+<br>
+
+学到这里的时候我已经一头雾水了，无数的新名词扑面而来，接下来会一一介绍他们。
+<br>
+
+RNN: <><><>我还没学，先空着
+<br>
+
+Encoder: 在此处的作用是通过处理输入，来捕获输入当中重要的信息(特征)，并将其存储在 Network 中作为「隐状态」(hidden state)
+特别的，如果所用的模型带有 attention 机制，Encoder 还会输出一个 context vector，该向量是根据输入生成的隐状态的加权和，
+该权值由当前 step 的上一个输出隐状态，和所有 Encoder 算出的输入隐状态计算得到(进行点积得到 attention score 再softmax)
+<br>
+
+Decoder: 此处用于处理输出，借助 隐状态 和 context vector 来生成最终输出(将 固定长的向量 extract 成不定长的序列)
+生成输出的过程 Decoder 会采用自回归的方式进行，一次值生成输出序列当中的一个元素，下一步均会使用上一步生成的元素进行计算，
+当然 context vector 和 输入序列信息(隐状态) 也会作为重要的一部分纳入计算
+具体而言，在具有 attention 机制的模型当中，context vector 和 隐状态 会连接到一起形成 attention 隐状态，来作为下一 step Decoder 的输入之一(还有 上一步生成的元素)。
+<br>
+
+Attention 机制: 由 Bahdanau(总觉得这名字是个印度人，但是加拿大) 引入的到 Seq2seq 问题当中的，
+用于解决朴素 Seq2seq 模型中，长输入中隐状态中信息失真的情况。(在 Encoder 处理输入的过程中，因为输入过长，输入的前一部分的特征的信息煽已经被后输入的信息所挤占，影响越来越弱)
+而 Attention 机制保留了处理输入过程当中每一步的隐状态，让所有隐状态都参与到计算中，允许在 Decoder 过程中有选择性地关注输入的不同部分，
+在 Decoder 每一步中， alignment model 都采用当前状态和 “所有” 注意力隐向量来计算 attention score，配合 softmax 就可以得到注意力权重，实现对隐状态的选择
+<br>
+
+alignment model 是一个额外的 NN model ，与 Seq2seq 联合训练，用来计算 输入(隐状态) 与 前一步的输出(由 attention 隐状态表示) 之间的匹配程度
+
+<br>
+
+自回归(autoregressive, AR):  把上一步的结果作为下一步的输入(GPT 采用的就是这个方法)，
+好吧，更精确的解释是，输出变量线性依赖于自身先前的值和随机项(不完全可预测的项)，也可以说后发状态是先前状态的函数。
+<br>
+
+更具体的解释等笔者哪天对数学感兴趣了再说吧），虽然有没有下一篇文章都难说
+<br>
+<br>
+
+好了，名词都知道了，能看懂意思了，这下问题出来了
+
+<ul>
+  <li>为什么是 RNN 其他模型难道没有处理变长数据的能力吗</li>
+  <li>既然 RNN 可以处理不定长的输入，为什么需要使用两个 RNN ，而不直接采用一个？</li>
+  <li>使用 RNN 有什么弊端吗</li>
+</ul>
+
+对于第一个问题，答案是：还真是。
+<br>
+
+其实 DNN 在语音识别和视觉对象识别上已经取得了非凡的表现。
+其强大之处在于，能在适当步骤下进行任意平行计算（？没看懂）。尽管 NN 与传统的统计模型相关，他们能学会复杂的计算。
+所以，如果一个存在一个参数设置使得大型的 DNN 能得到良好的结果，那么有监督的反向传播将会帮助 DNN 找到这些参数并解决这个问题。
+但 DNN 的强大能力和灵活性，不能帮他解决任意长度输入输出的问题，它只能处理那些能被「合理编码」为「固定维度」向量的问题。
+当时现实生活当中，很多问题的最佳表述是不定长的，而更多重要问题的序列长度都无法被提前得知，并且是 map Sequence to Sequence 的。
+所以我们需要使用 RNN 来完成这个任务
+<br>
+
+对于RNN 而言，只要提前得知输入输出的对齐情况，就可以轻松完成映射工作，
+但(文章完成的时候)还不清楚如何将 RNN 应用于 输入输出 长度不同并且有复杂而非单调关系(就是输入输出均可变长)
+而解决这个问题最简单的策略就是，使用两个 RNN ，一个将不定长输入映射到固定维度向量，另一个将向量映射到目标序列
+<br>
+
+例如：在翻译场景下，输入和输出之间存在相当大的时间滞后，我们需要先输入全部信息。
+而RNN 获得全部相关信息后会产生长期依赖性而难以训练的问题。
+<br>
+
+我们可以用 LSTM 来缓解这个问题（但 LSTM 也是 RNN 啊！）
+LSTM 能够成功学习具有长范围时间依赖性的数据，能学会将一个可变长的输入句子编程一个固定维度的向量表示
+在具体使用当中， LSTM 被用来估计输入到输出的条件概率的 $p(y_1,…,y_{T’} | x_1,…,x_T)$
+计算条件概率的方法是: 1. 获取由最后一个 隐状态给出的 (x_1,…,x_T) 的固定维度表示 v。 2. 采用标准的 LSTM-LM 公式计算 (y_1,…,y_{T’}) 的概率(初始隐状态是 v)
+再使用了 <EOS> 表示句子结尾，这样使得模型能够定义所有可能长度的序列上的分布
+使用简单的从左到右 beam search decoder 来搜索最佳结果
+
+<br>
+
+在实践过程中还发现了一些 LSTM 的使用技巧
+<ul>
+  <li>使用两个不同的LSTM 可以以很少的计算成本增加模型参数的数量，并且自然地同时在多个语言对上训练 LSTM</li>
+  <li>由于深度 LSTM 的性能明显优于浅层 LSTM </li>
+  <li>发现通过简单的倒转输入，可以使得 SGD 更容易地在输入和输出之间建立通信，极大地提高 LSTM 的性能</li>
+</ul>
+
+<br>
+
+
+这样好像就结束了……好像不能这样，还有许多细节还未探讨，究竟要如何通过机器学习来实现这个 Seq2seq 模型？
+<br>
+
+但下次吧。
+<br>
+有没有下次，再说吧
+
+
+
+
+<br>
+
+
+
+
+
+    1. https://s3tlxskbq3.feishu.cn/docx/NyPqdCKraoXz9gxNVCfcIFdnnAc#ZWSwdmWQaoGAQuxkOEHcuD5UnVl
+<br>
+
+    2. https://arxiv.org/pdf/1409.3215.pdf
+
+    <br>
+    3. https://en.wikipedia.org/wiki/Autoregressive_model
+    <br>
+    4. https://en.wikipedia.org/wiki/Seq2seq#:~:text=Seq2seq%20is%20a%20family%20of,one%20sequence%20into%20another%20sequence.
+  </bm-article>
+  <script src="../../script/controlPixelRatio.js"></script>
+  <script src="../../script/articleTemplate.js"></script>
+  <script src="../../script/articleImage.js"></script>
+</body>
+
+</html>
