@@ -1,10 +1,9 @@
 ---
-slug: my-theme-preview
+slug: Compile-Interpret-and-JIT
 title: 编译与解释与JIT
 description: 编译和解释是相当基础的概念，但如果将他们结合会形成什么样的火花呢？我阅读 Manjusaka 的文章 [a-simple-introduction-about-python-jit](https://www.manjusaka.blog/posts/2024/01/03/a-simple-introduction-about-python-jit/) 时发现我对 JIT 和 “解释” 的了解似乎非常有限，有许多盲区。遂决定进行调研满足自己的好奇心，同时为了让自己记得更牢固而输出，于是有了这篇文章。
 date: 2025-03-17T00:30:00+08:00
 lastmod: 2025-03-17T00:30:00+08:00
-hidden: false
 tags:
   - programming language
 ---
@@ -43,9 +42,6 @@ JIT 更常见的用法是作为解释型语言的辅助，因为编译得到的�
 
 ### Reference
 https://en.wikipedia.org/wiki/Just-in-time_compilation
-
 https://www.zhihu.com/question/26913901/answer/35303563
-
 https://stackoverflow.com/questions/48564710/what-is-the-difference-between-just-in-time-compilation-and-dynamic-compilation
-
 https://kipp.ly/jits-intro/
