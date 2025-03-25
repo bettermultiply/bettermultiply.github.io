@@ -7,41 +7,53 @@ lastmod: 2025-03-24T00:30:00+08:00
 tags:
   - Framework
 ---
-PostCSS 小科普：https://www.manjusaka.blog/posts/2016/07/22/%E5%85%B3%E4%BA%8EPostCSS%E7%9A%84%E4%B8%80%E7%82%B9%E5%B0%8F%E7%A7%91%E6%99%AE/
+本文的写作依旧来自 Manjusaka 的博客（因为我最近想把他的博客从头到尾看一遍）[PostCSS 小科普](https://www.manjusaka.blog/posts/2016/07/22/%E5%85%B3%E4%BA%8EPostCSS%E7%9A%84%E4%B8%80%E7%82%B9%E5%B0%8F%E7%A7%91%E6%99%AE/)。因为我缺失太多知识所以必须补充更多知识才能读懂，所以总归是与他的博客不太一样的。
 
-PostCSS 是一个使用 JavaScript 插件来转换 CSS 的工具
--> 什么叫使用 JS 插件？为什么要转换 CSS？
-PostCSS 是一个框架，我们可以在框架内嵌入 JS 插件进行使用。
-因为我们通常想要对 CSS 进行一些修改，例如：为 CSS 添加前缀。这些确定性的任务如果手动完成就过于劳累了。
+PostCSS 是一个用于转换 CSS 的框架，通过在框架内嵌入 JavaScript 插件来使用它。
+这里引申出两个问题：1. 如何在框架中使用插件？ 2. 为什么要转换 CSS？
 
-添加前缀是为了满足浏览器的兼容性，因为浏览器没有完全统一 CSS 标准
-例如，在早期的 ie 浏览器一些属性需要加上 -ms- 而 safari 和 chrome 的一些属性需要加上 -webkit-
+先来解决第一个问题，下图展示了 PostCSS 的工作流，可以看到，所有插件都是线性地排列，轮流处理解析 CSS 文本得到的中间形式，在插件完成输出后再将中间形式转化为 CSS 文本。
+
+[PostCSS Workflow](../attachments/PostCSS/PostCSS-Workflow.png)
+
+第二个问题中所谓的「转换」其实可以视作「变更」。更具体来说，是对 CSS 进行一系列的修改，使之更符合开发者预期。这也是 PostCSS 的开发初衷（我瞎猜的，别信），希望提供一个便利的框架，方便开发者编写插件完成它们希望对 CSS 代码进行的修改，以此减少开发者在编写代码时所做的“体力活”，也减少一些规则可识别的错误，让代码变得更加强大。例如：AutoPrefixer 就是一个方便的为 CSS 添加前缀的插件。
+
+于是问题又来了😓，为什么我们为 CSS 添加插件？
+
+添加前缀并不像字面意思那样仅仅向某些字段前添加内容（我曾经这么认为），而是为 CSS 添加属性，满足对不同浏览器因为没有完全遵照统一的 CSS 标准而产生的兼容性问题。
+以下代码就是一个最小的例子，在早期的 ie 浏览器一些属性前需要加上 -ms- ，而 safari 和 chrome 的一些属性需要加上 -webkit-，才能按预期渲染。
+
+```css
+/** Autoprefixer 处理前 */
 .example {
     display: grid;
 }
 
+/** Autoprefixer 处理后*/
 .example {
     display: -ms-grid;
     display: -webkit-grid;
     display: grid;
 }
+```
+
+有点偏题了......，让我拉回来。
+
+再来简单讲讲 PostCSS 自身。PostCSS 不进行语法和语义的自定义，也不是像 Sass 或者 Less 这样的 样式预处理器(style preprocessor)。相反，PostCSS 期望开发者能够方便地将其集成到 Sass 等预处理器上，用于处理任何「有效的」CSS，这意味着，PostCSS 不一定需要执行 CSS 语法标准，可以允许用户自定义 CSS-like(类CSS) 的特征作为输入。
+
+PostCSS 架构包含：Toeknizer/Lexer, Parser, Processor, Stringifier 四个主要部分。
+
+1. ***Tokenizer/Lexer*** 负责生成 token 列表，但它没有使用像：类，这样，任何可能拖慢 Tokenizer 速度的高级构造，实现了对速度的优化，因此可能看起来不是那么美观（可读性差）。
+2. ***Parser*** 生成抽象语法树(AST)，也就是我们前面所提到的中间结构，这种结构广泛应用在各种编译器上。
+3. ***Preprocessor*** 结构非常简单，用于初始化插件并允许语法转换，通过公开操作 CSS 节点树的 API 来为插件提供服务。
+4. ***Stringifier*** 通过遍历的方式，将处理完成的 AST 转化成标准的 CSS 字符串。
+
+不同于 PostCSS 将 Tokenizer 和 Parser 进行拆分，采用从 Source String -> tokens -> AST 的方法。另一种非常流行的方法是直接将字符串转化为 AST，像 Rework analyzer 就是采用这种风格。但这种方法在代码库很大的情况下会出现代码难以阅读，速度变得很慢等问题。出于性能和抽象复杂度的角度考虑，PostCSS 选择将二者分离的设计，来实现速度非常快的 Tokenizer 和易于阅读的解析器（但难以阅读和速度缓慢也是双方的缺点）进行互补，也专注于各自的功能。
 
 
-PostCSS 不是类似 Sass 或 Less 的风格预处理器
-PostCSS 与 CSS 协作，并且能够轻松集成到上述工具当中。任何有效的 CSS 都可以由 PostCSS 处理
-PostCSS 是构建出色的执行 CSS 操作工具的框架。
-PostCSS 并不一定执行 CSS 标准，而是允许用户定义自定义的类 CSS 特征。
+PS: 最后讲讲像 Sass, Less 这种预处理器是干什么的。预处理器通过定义一种新的语言，来为 CSS 增加一些编程特性，允许开发者使用这种语言完成 CSS编码，其编译目标文件就是标准的 CSS。
 
-PostCSS 的解释器采用 词法分析和语法分析 从 Source String -> tokens -> AST 而不是像 Rework analyzer 那样直接转化为AST 是出于性能和抽象复杂度的角度考虑的。
+**Reference**
 
-Tokenizer/Lexer 再语法分析中起着重要作用
-
-PostCSS 包含：CSS 解析器(Parser)、Processor (暴露操作 CSS 节点树的 API)、Stringifier 节点树字符串化工具。
--> 为什么要对节点树进行字符串化？
-因为为了便于操作，PostCSS 首先将 字符串 CSS 转化为了 AST，而我们最终需要的是字符串形式的 CSS 。
-
-
-
-什么是 vendor prefixes（浏览器内核前缀）？
-CSS 预处理器是干什么用的？类似 Sass 和 Less
-预处理器通过定义一种新的语言，来为 CSS 增加一些编程特性，允许开发者使用这种语言完成 CSS编码，其编译目标文件就是标准的 CSS。
+[1] [PostCSS Docs](https://postcss.org/docs/postcss-architecture)<br/>
+[2] [关于PostCSS的一点小科普 - Manjusaka](https://www.manjusaka.blog/posts/2016/07/22/%E5%85%B3%E4%BA%8EPostCSS%E7%9A%84%E4%B8%80%E7%82%B9%E5%B0%8F%E7%A7%91%E6%99%AE/)
