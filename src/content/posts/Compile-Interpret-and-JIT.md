@@ -40,8 +40,9 @@ JIT 更常见的用法是作为解释型语言的辅助，因为编译得到的�
 但是，似乎直觉上还可以采用另一种结合方式：在开发的过程中采用解释方式进行代码开发，而在分发的过程中使用编译方式进行分发，这样同时得到开发迭代速度快和运行速度快两大优势。又是 Java，也支持了这种方式。J9 VM 和知名的 HotSpot VM 都同时支持两种方式，默认使用混合模式（编译+解释）执行引擎，但也支持 AOT 编译执行。
 
 
-### Reference
-https://en.wikipedia.org/wiki/Just-in-time_compilation
-https://www.zhihu.com/question/26913901/answer/35303563
-https://stackoverflow.com/questions/48564710/what-is-the-difference-between-just-in-time-compilation-and-dynamic-compilation
-https://kipp.ly/jits-intro/
+**Reference**
+
+[1] [Just-in-time compilaion - Wiki](https://en.wikipedia.org/wiki/Just-in-time_compilation)<br/>
+[2] [RednaxelaFX 知乎回答](https://www.zhihu.com/question/26913901/answer/35303563)<br/>
+[3] [Hadi Brais Stackoverflow Answer](https://stackoverflow.com/questions/48564710/what-is-the-difference-between-just-in-time-compilation-and-dynamic-compilation)<br/>
+[4] [kipply's blog - jits intro](https://kipp.ly/jits-intro/)<br/>
