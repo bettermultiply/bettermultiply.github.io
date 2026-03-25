@@ -27,3 +27,7 @@ __coverage__/
 
 # Vercel output
 .vercel
+
+.codex
+
+todo-docs

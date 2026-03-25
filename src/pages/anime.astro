@@ -1,0 +1,112 @@
+---
+import { type AnimeEntry, type AnimeStatus, animeEntries } from '~/data/anime';
+import ScaffoldLayout from '~/layouts/ScaffoldLayout.astro';
+
+const statusLabel: Record<AnimeStatus, string> = {
+	watching: '正在追',
+	done: '已看完',
+	paused: '搁置中',
+};
+
+const formatProgress = ({ episode, total }: AnimeEntry) =>
+	total ? `${episode} / ${total}` : `看到第 ${episode} 集`;
+
+const sortByUpdatedAt = (entries: AnimeEntry[]) =>
+	[...entries].sort(
+		(left, right) =>
+			new Date(right.updatedAt).getTime() - new Date(left.updatedAt).getTime(),
+	);
+
+const recentEntries = sortByUpdatedAt(animeEntries).slice(0, 5);
+const watchingEntries = sortByUpdatedAt(
+	animeEntries.filter((entry) => entry.status === 'watching'),
+);
+const doneEntries = sortByUpdatedAt(
+	animeEntries.filter((entry) => entry.status === 'done'),
+);
+const pausedEntries = sortByUpdatedAt(
+	animeEntries.filter((entry) => entry.status === 'paused'),
+);
+---
+
+<ScaffoldLayout
+	title="Anime"
+	description="最近在追的动画和当前进度。"
+	currentNav="Anime"
+>
+	<section class="mx-auto max-w-4xl">
+		<div class="mb-10 space-y-3">
+			<h1 class="text-5xl font-extrabold">Anime</h1>
+			<p class="max-w-2xl leading-7 opacity-80">
+				总是忘记自己看过什么，忘记自己的爱的动画。
+			</p>
+		</div>
+
+		<div class="mb-10 rounded-2xl border border-neutral-200 bg-neutral-100/70 p-6 dark:border-neutral-700 dark:bg-neutral-900/40">
+			<h2 class="mb-4 text-2xl font-bold">最近在看</h2>
+			<ul class="space-y-3">
+				{
+					recentEntries.map((entry) => (
+						<li class="flex flex-col gap-1 lg:flex-row lg:items-center lg:justify-between">
+							<div>
+								<p class="text-xl font-semibold">{entry.title}</p>
+								<p class="opacity-75">{statusLabel[entry.status]}</p>
+							</div>
+							<div class="text-left opacity-80 lg:text-right">
+								<p>{formatProgress(entry)}</p>
+								<p>{entry.updatedAt}</p>
+							</div>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+
+		<div class="grid gap-6 lg:grid-cols-3">
+			<section class="rounded-2xl border border-neutral-200 p-6 dark:border-neutral-700">
+				<h2 class="mb-4 text-2xl font-bold">正在追</h2>
+				<ul class="space-y-4">
+					{
+						watchingEntries.map((entry) => (
+							<li>
+								<p class="text-lg font-semibold">{entry.title}</p>
+								<p class="opacity-80">{formatProgress(entry)}</p>
+								<p class="text-sm opacity-60">更新于 {entry.updatedAt}</p>
+							</li>
+						))
+					}
+				</ul>
+			</section>
+
+			<section class="rounded-2xl border border-neutral-200 p-6 dark:border-neutral-700">
+				<h2 class="mb-4 text-2xl font-bold">已看完</h2>
+				<ul class="space-y-4">
+					{
+						doneEntries.map((entry) => (
+							<li>
+								<p class="text-lg font-semibold">{entry.title}</p>
+								<p class="opacity-80">{formatProgress(entry)}</p>
+								<p class="text-sm opacity-60">更新于 {entry.updatedAt}</p>
+							</li>
+						))
+					}
+				</ul>
+			</section>
+
+			<section class="rounded-2xl border border-neutral-200 p-6 dark:border-neutral-700">
+				<h2 class="mb-4 text-2xl font-bold">搁置中</h2>
+				<ul class="space-y-4">
+					{
+						pausedEntries.map((entry) => (
+							<li>
+								<p class="text-lg font-semibold">{entry.title}</p>
+								<p class="opacity-80">{formatProgress(entry)}</p>
+								<p class="text-sm opacity-60">更新于 {entry.updatedAt}</p>
+							</li>
+						))
+					}
+				</ul>
+			</section>
+		</div>
+	</section>
+</ScaffoldLayout>
